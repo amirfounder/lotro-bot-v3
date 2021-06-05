@@ -10,32 +10,33 @@ from PIL import Image
 
 # CONSTANTS
 sct = mss.mss()
-SCREEN_RES = (1920, 1080)
-SCALE_X, SCALE_Y = 1920 / SCREEN_RES[0], 1080 / SCREEN_RES[1]
+SCREEN_RES = (1152, 864)
+
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 BOXES = {
-    'collapse_all': (35 * SCALE_X, 85 * SCALE_Y, 10 * SCALE_X, 10 * SCALE_Y),
-    'portraits': (10 * SCALE_X, 20 * SCALE_Y, 570 * SCALE_X, 50 * SCALE_Y),
+    'collapse_all': (35, 85, 10, 10),
+    'portraits': (10, 20, 570, 50),
     'buttons': {
-        'make': (645 * SCALE_X, 525 * SCALE_Y, 65 * SCALE_X, 15 * SCALE_Y),
-        'make_all': (720 * SCALE_X, 530 * SCALE_Y, 60 * SCALE_X, 10 * SCALE_Y),
-        'repair_all': (1750 * SCALE_X, 450 * SCALE_Y, 60 * SCALE_X, 10 * SCALE_Y)
+        'make': (645, 525, 65, 15),
+        'make_all': (720, 530, 60, 10),
+        'repair_all': (1750 - (1920 - 1152), 450, 60, 10)
     },
     'tabs': {
-        'repair': (1805 * SCALE_X, 70 * SCALE_Y, 80 * SCALE_X, 10 * SCALE_Y),
-        'farmer': (60 * SCALE_X, 50 * SCALE_Y, 125 * SCALE_X, 12 * SCALE_Y),
-        'cook': (130 * SCALE_X, 30 * SCALE_Y, 125 * SCALE_X, 12 * SCALE_Y)
+        'repair': (1805 - (1920 - 1152), 70, 80, 10),
+        'farmer': (60, 50, 125, 12),
+        'cook': (130, 30, 125, 12)
     },
     'tiers': {
-        'minas_ithil': (15 * SCALE_X, 345 * SCALE_Y, 100 * SCALE_X, 12 * SCALE_Y)
+        'minas_ithil': (15, 345, 100, 12)
     },
     'categories': {
-        'minas_ithil_vegetables': (23 * SCALE_X, 382 * SCALE_Y, 90 * SCALE_X, 10 * SCALE_Y),
-        'minas_ithil_ingredients': (25 * SCALE_X, 398 * SCALE_Y, 100 * SCALE_X, 12 * SCALE_Y)
+        'minas_ithil_vegetables': (23, 382, 90, 10),
+        'minas_ithil_ingredients': (25, 398, 100, 12)
     },
     'recipes': {
-        'minas_ithil_field': (40 * SCALE_X, 400 * SCALE_Y, 125 * SCALE_X, 10 * SCALE_Y),
-        'bunch_of_par_cooked_vegetables': (35 * SCALE_X, 414 * SCALE_Y, 165 * SCALE_X, 12 * SCALE_Y)
+        'minas_ithil_field': (40, 400, 125, 10),
+        'bunch_of_par_cooked_vegetables': (35, 414, 165, 12)
     }
 }
 KEY_BINDINGS = {
@@ -235,14 +236,19 @@ def setup_buffs():
 
 
 # FARM AND SETUP FARM
-def farm():
+def farm(total, batch_count):
     guide_to_thorins_hall()
+    generate_random_delay(3000, 200)
 
     # GO TO THE GREENHOUSE
     rotate_left(90)
+    generate_random_delay()
     move_forward(generate_random_time(5000, 250))
     hotkey('ctrl', 'alt', 'i')
     utilize_selection()
+    generate_random_delay()
+    utilize_selection()
+    generate_random_delay()
     move_forward(generate_random_time(1750, 500))
 
     # GO TO THE FARMING FACILITY
@@ -252,17 +258,19 @@ def farm():
     rotate_left(180)
 
     # FARM
-    for i in range(1):
+    for i in range(math.floor(total / batch_count)):
         pydirectinput.press('t')
         collapse_all_tiers()
         click_farmer_tab()
         toggle_minas_ithil_tier()
         toggle_minas_ithil_vegetables()
         toggle_minas_ithil_field()
-        for i in range(34):
+        for j in range(batch_count):
             click_make_button()
+            generate_random_delay(3500, 500)
             hotkey('ctrl', 'alt', 'i')
             utilize_selection()
+            generate_random_delay(6000, 500)
 
         pydirectinput.press('t')
         hotkey('ctrl', 'shift', 'n')
@@ -288,6 +296,7 @@ def farm():
                 raise Exception("Unable to find the expert farmhand")
 
         utilize_selection()
+        generate_random_delay(3000, 250)
         click_repair_tab()
         click_repair_all_button()
         pydirectinput.press('esc')
@@ -351,4 +360,4 @@ def make(total, batch_count):
 
 
 countdown()
-farm()
+farm(48, 1)
