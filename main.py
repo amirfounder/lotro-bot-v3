@@ -10,30 +10,32 @@ from PIL import Image
 
 # CONSTANTS
 sct = mss.mss()
+SCREEN_RES = (1920, 1080)
+SCALE_X, SCALE_Y = 1920 / SCREEN_RES[0], 1080 / SCREEN_RES[1]
 
 BOXES = {
-    'collapse_all': (35, 85, 10, 10),
-    'portraits': (10, 20, 570, 50),
+    'collapse_all': (35 * SCALE_X, 85 * SCALE_Y, 10 * SCALE_X, 10 * SCALE_Y),
+    'portraits': (10 * SCALE_X, 20 * SCALE_Y, 570 * SCALE_X, 50 * SCALE_Y),
     'buttons': {
-        'make': (645, 525, 65, 15),
-        'make_all': (720, 530, 60, 10),
-        'repair_all': (1750, 450, 60, 10)
+        'make': (645 * SCALE_X, 525 * SCALE_Y, 65 * SCALE_X, 15 * SCALE_Y),
+        'make_all': (720 * SCALE_X, 530 * SCALE_Y, 60 * SCALE_X, 10 * SCALE_Y),
+        'repair_all': (1750 * SCALE_X, 450 * SCALE_Y, 60 * SCALE_X, 10 * SCALE_Y)
     },
     'tabs': {
-        'repair': (1805, 70, 80, 10),
-        'farmer': (60, 50, 125, 12),
-        'cook': (130, 30, 125, 12)
+        'repair': (1805 * SCALE_X, 70 * SCALE_Y, 80 * SCALE_X, 10 * SCALE_Y),
+        'farmer': (60 * SCALE_X, 50 * SCALE_Y, 125 * SCALE_X, 12 * SCALE_Y),
+        'cook': (130 * SCALE_X, 30 * SCALE_Y, 125 * SCALE_X, 12 * SCALE_Y)
     },
     'tiers': {
-        'minas_ithil': (15, 345, 100, 12)
+        'minas_ithil': (15 * SCALE_X, 345 * SCALE_Y, 100 * SCALE_X, 12 * SCALE_Y)
     },
     'categories': {
-        'minas_ithil_vegetables': (23, 382, 90, 10),
-        'minas_ithil_ingredients': (25, 398, 100, 12)
+        'minas_ithil_vegetables': (23 * SCALE_X, 382 * SCALE_Y, 90 * SCALE_X, 10 * SCALE_Y),
+        'minas_ithil_ingredients': (25 * SCALE_X, 398 * SCALE_Y, 100 * SCALE_X, 12 * SCALE_Y)
     },
     'recipes': {
-        'minas_ithil_field': (40, 400, 125, 10),
-        'bunch_of_par_cooked_vegetables': (35, 414, 165, 12)
+        'minas_ithil_field': (40 * SCALE_X, 400 * SCALE_Y, 125 * SCALE_X, 10 * SCALE_Y),
+        'bunch_of_par_cooked_vegetables': (35 * SCALE_X, 414 * SCALE_Y, 165 * SCALE_X, 12 * SCALE_Y)
     }
 }
 KEY_BINDINGS = {
