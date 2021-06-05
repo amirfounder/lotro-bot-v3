@@ -1,3 +1,4 @@
+import math
 import random
 import time
 
@@ -8,7 +9,6 @@ import pytesseract
 from PIL import Image
 
 # CONSTANTS
-
 sct = mss.mss()
 
 BOXES = {
@@ -28,10 +28,12 @@ BOXES = {
         'minas_ithil': (15, 345, 100, 12)
     },
     'categories': {
-        'minas_ithil_vegetables': (23, 382, 90, 10)
+        'minas_ithil_vegetables': (23, 382, 90, 10),
+        'minas_ithil_ingredients': (25, 398, 100, 12)
     },
     'recipes': {
-        'minas_ithil_field': (40, 400, 125, 10)
+        'minas_ithil_field': (40, 400, 125, 10),
+        'bunch_of_par_cooked_vegetables': (35, 414, 165, 12)
     }
 }
 KEY_BINDINGS = {
@@ -61,21 +63,33 @@ def generate_random_coords(box):
     x, y, w, h = box
     rand_x = random.randint(x, x + w)
     rand_y = random.randint(y, y + h)
+    print(f'Generated random coordinates: {rand_x}, {rand_y}')
     return rand_x, rand_y
 
 
-def generate_random_time(default=500, margin=500):
-    return random.randint(int(default - margin / 2), int(default + margin / 2))
+def generate_random_time(target=200, margin=390):
+    rand_time = random.randint(int(target - margin / 2), int(target + margin / 2))
+    print(f'Generated random time: {rand_time} ms')
+    return rand_time
 
 
-# MOUSE INTERACTIONS
+def generate_random_delay(target=200, margin=200):
+    rand_delay = generate_random_time(target, margin) / 1000
+    time.sleep(rand_delay)
+    print(f'Generated random delay: {rand_delay} sec')
+
+
+# MOUSE INTERACTIONS CORE
 def click(box):
     x, y = generate_random_coords(box)
     duration = generate_random_time() / 1000
     pyautogui.moveTo(x, y, duration=duration)
     pyautogui.click()
+    print(f'Clicked on screen at: {x}, {y}; Mouse travel time: {duration}')
+    generate_random_delay()
 
 
+# MOUSE INTERACTIONS
 def click_repair_tab():
     click(BOXES['tabs']['repair'])
 
@@ -97,7 +111,7 @@ def click_make_button():
 
 
 def click_make_all_button():
-    click(BOXES['button']['make_all'])
+    click(BOXES['buttons']['make_all'])
 
 
 # CRAFTING
@@ -117,10 +131,19 @@ def toggle_minas_ithil_field():
     click(BOXES['recipes']['minas_ithil_field'])
 
 
+def toggle_minas_ithil_ingredients():
+    click(BOXES['categories']['minas_ithil_ingredients'])
+
+
+def toggle_bunch_of_par_cooked_vegetables():
+    click(BOXES['recipes']['bunch_of_par_cooked_vegetables'])
+
+
 # MOVEMENTS
 def move(key, duration_ms=0):
     if duration_ms == 0:
         pydirectinput.press(key)
+        generate_random_delay()
         return
     pydirectinput.keyDown(key)
     time.sleep(duration_ms / 1000)
@@ -132,13 +155,14 @@ def rotate(key, degrees):
     pydirectinput.keyDown(key)
     time.sleep(duration_ms / 1000)
     pydirectinput.keyUp(key)
+    generate_random_delay()
 
 
-def move_forward(duration_ms):
+def move_forward(duration_ms=0):
     move(KEY_BINDINGS['movement']['move_forward'], duration_ms)
 
 
-def move_backward(duration_ms):
+def move_backward(duration_ms=0):
     move(KEY_BINDINGS['movement']['move_backward'], duration_ms)
 
 
@@ -152,12 +176,14 @@ def rotate_left(degrees):
 
 # SELECTIONS
 def hotkey(*args):
+    print(f'Clicked hotkey: {args}')
     args = list(args)
     for i in args:
         pydirectinput.keyDown(i)
     args.reverse()
     for i in args:
         pydirectinput.keyUp(i)
+    generate_random_delay()
 
 
 def select_nearest_item():
@@ -178,6 +204,7 @@ def select_next_npc():
 
 def utilize_selection():
     pydirectinput.press(KEY_BINDINGS['selection']['utilize_selection'])
+    generate_random_delay()
 
 
 # SKILLS
@@ -214,43 +241,32 @@ def farm():
     move_forward(generate_random_time(5000, 250))
     hotkey('ctrl', 'alt', 'i')
     utilize_selection()
-    time.sleep(generate_random_time(1000, 250) / 1000)
     move_forward(generate_random_time(1750, 500))
 
     # GO TO THE FARMING FACILITY
-    time.sleep(generate_random_time(750, 200) / 1000)
+    generate_random_delay(1250, 500)
     rotate_left(90)
     move_forward(generate_random_time(3100, 200))
-    time.sleep(generate_random_time(400, 200) / 1000)
     rotate_left(180)
 
     # FARM
-    for i in range(3):
+    for i in range(1):
         pydirectinput.press('t')
-        time.sleep(generate_random_time(100, 90) / 1000)
         collapse_all_tiers()
-        time.sleep(generate_random_time(100, 90) / 1000)
         click_farmer_tab()
-        time.sleep(generate_random_time(100, 90) / 1000)
         toggle_minas_ithil_tier()
-        time.sleep(generate_random_time(100, 90) / 1000)
         toggle_minas_ithil_vegetables()
-        time.sleep(generate_random_time(100, 90) / 1000)
         toggle_minas_ithil_field()
-        for i in range(3):
+        for i in range(34):
             click_make_button()
-            pydirectinput.press('t')
-            time.sleep(generate_random_time(3250, 250) / 1000)
             hotkey('ctrl', 'alt', 'i')
             utilize_selection()
-            time.sleep(generate_random_time(6000, 500) / 1000)
-            pydirectinput.press('t')
-            time.sleep(generate_random_time(200, 190) / 1000)
 
         pydirectinput.press('t')
-        time.sleep(generate_random_time(200, 190) / 1000)
         hotkey('ctrl', 'shift', 'n')
 
+        # sct.grab docs accept only dicts, but works with tuple
+        # noinspection PyTypeChecker
         img = sct.grab(BOXES['portraits'])
         img = Image.frombytes("RGB", img.size, img.bgra, 'raw', 'BGRX')
         text = pytesseract.image_to_string(img)
@@ -270,16 +286,67 @@ def farm():
                 raise Exception("Unable to find the expert farmhand")
 
         utilize_selection()
-        time.sleep(generate_random_time(2250, 500) / 1000)
         click_repair_tab()
-        time.sleep(generate_random_time(100, 90) / 1000)
         click_repair_all_button()
-        time.sleep(generate_random_time(100, 90) / 1000)
         pydirectinput.press('esc')
-        time.sleep(generate_random_time(100, 90) / 1000)
         pydirectinput.press('esc')
         move_backward(generate_random_time(3500, 250))
-        time.sleep(generate_random_time(100, 90) / 1000)
+
+
+def make(total, batch_count):
+    leftover = total % (batch_count * 2)
+    click_cook_tab()
+    collapse_all_tiers()
+    toggle_minas_ithil_tier()
+    toggle_minas_ithil_ingredients()
+    toggle_bunch_of_par_cooked_vegetables()
+    for i in range(math.floor(total / batch_count * 2)):
+        click_make_all_button()
+        for j in range(batch_count):
+            time.sleep(2.9897)
+            print(f'Successfully completed "make" (Total: ~{j + 1}; Left: ~{batch_count + batch_count - j - 1})')
+        generate_random_delay(1150, 200)
+        move_forward()
+        click_repair_tab()
+        click_repair_all_button()
+        click_make_all_button()
+        for j in range(batch_count):
+            time.sleep(2.9897)
+            print(f'Successfully completed "make" (Total: ~{j + batch_count + 1}; Left: ~{batch_count - j - 1})')
+        generate_random_delay(1150, 200)
+        move_backward()
+        click_repair_tab()
+        click_repair_all_button()
+        print(f'Successfully completed batch (Total: {i + 1}; Left: {total - batch_count * 2 - 1})')
+    if batch_count > leftover > 0:
+        click_make_all_button()
+        time.sleep(4 * leftover)
+        for j in range(batch_count):
+            time.sleep(2.9897)
+            print(f'Successfully completed "make" (Total: ~{j + 1}; Left: {leftover - j - 1})')
+        generate_random_delay(1150, 200)
+        move_backward()
+        click_repair_tab()
+        click_repair_all_button()
+        click_make_all_button()
+        for j in range(leftover):
+            time.sleep(2.9897)
+            print(f'Successfully completed "make" (Total: ~{j + 1}; Left: {leftover - batch_count - j - 1})')
+        generate_random_delay(1150, 200)
+        move_backward()
+        click_repair_tab()
+        click_repair_all_button()
+    else:
+        click_make_all_button()
+        for j in range(leftover):
+            time.sleep(2.9897)
+            print(f'Successfully completed "make" (Total: ~{j + 1}; Left: {leftover - j - 1})')
+        generate_random_delay(1150, 200)
+        move_backward()
+        click_repair_tab()
+        click_repair_all_button()
+    print('done')
+
 
 countdown()
 farm()
