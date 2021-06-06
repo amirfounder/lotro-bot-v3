@@ -12,5 +12,12 @@ This simple bot aims to simplify the botting process of botting lotro.
 
 ## System Requirements
 
-- 1920 x 1080 window screen
+- 1920 x 1080 or 1152 x 864 window screen
 - Lotro playing on primary monitor
+- 10 cores to avoid crashes (if on VM)
+
+## Todo
+
+- Confirm the item you have selected is the correct thing
+- Confirm you are at the right facility
+- Local database
