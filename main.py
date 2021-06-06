@@ -2,6 +2,7 @@ import math
 import random
 import time
 
+import cv2
 import mss.tools
 import pyautogui
 import pydirectinput
@@ -15,7 +16,7 @@ SCREEN_RES = (1152, 864)
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 BOXES = {
-    'collapse_all': (35, 85, 10, 10),
+    'collapse_all': (36, 86, 8, 8),
     'portraits': (10, 20, 570, 50),
     'buttons': {
         'make': (645, 525, 65, 15),
@@ -253,21 +254,26 @@ def farm(total, batch_count):
 
     # GO TO THE FARMING FACILITY
     generate_random_delay(1250, 500)
-    rotate_left(90)
+    rotate_right(90)
     move_forward(generate_random_time(3100, 200))
-    rotate_left(180)
+    rotate_right(180)
 
     # FARM
     for i in range(math.floor(total / batch_count)):
+
+        # SETUP CHARACTER CRAFTING STATION
         pydirectinput.press('t')
         collapse_all_tiers()
         click_farmer_tab()
         toggle_minas_ithil_tier()
         toggle_minas_ithil_vegetables()
         toggle_minas_ithil_field()
+        generate_random_delay()
+
+        # BEGIN CRAFTING
         for j in range(batch_count):
             click_make_button()
-            generate_random_delay(3500, 500)
+            generate_random_delay(3500, 250)
             hotkey('ctrl', 'alt', 'i')
             utilize_selection()
             generate_random_delay(6000, 500)
@@ -291,17 +297,18 @@ def farm(total, batch_count):
             text = pytesseract.image_to_string(img)
 
             text = text.strip().lower()
+            print(text)
 
-            if "expert not in text" or "farmhand" not in text:
+            if "expert" not in text or "farmhand" not in text:
                 raise Exception("Unable to find the expert farmhand")
 
         utilize_selection()
-        generate_random_delay(3000, 250)
+        generate_random_delay(6000, 250)
         click_repair_tab()
         click_repair_all_button()
         pydirectinput.press('esc')
         pydirectinput.press('esc')
-        move_backward(generate_random_time(3500, 250))
+        move_backward(generate_random_time(7500, 250))
 
 
 def make(total, batch_count):
@@ -360,4 +367,4 @@ def make(total, batch_count):
 
 
 countdown()
-farm(48, 1)
+farm(3808, 50)
