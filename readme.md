@@ -21,3 +21,6 @@ This simple bot aims to simplify the botting process of botting lotro.
 - Confirm the item you have selected is the correct thing
 - Confirm you are at the right facility
 - Local database
+- Different functions for location setup
+- Different repair functions for each location
+- Setup enums for constant variables

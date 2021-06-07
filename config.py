@@ -28,6 +28,3 @@ def config_screen_dimensions():
 
 def config():
     config_screen_dimensions()
-
-
-config()
