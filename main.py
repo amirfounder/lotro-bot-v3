@@ -83,34 +83,34 @@ def collapse_all_tiers():
     print('Collapsed all tiers')
 
 
-def toggle_minas_ithil_tier():
-    click(constants.BOXES['tiers']['minas_ithil'])
-    print('Toggled minas ithil tier')
+def toggle_tier():
+    click(constants.BOXES['tiers']['gundabad'])
+    print('tier')
 
 
-def toggle_minas_ithil_vegetables():
-    click(constants.BOXES['categories']['minas_ithil_vegetables'])
-    print('Toggled minas ithil tier')
+def toggle_farming_category():
+    click(constants.BOXES['categories']['gundabad_vegetables'])
+    print('toggled farming cat')
 
 
-def toggle_minas_ithil_field():
-    click(constants.BOXES['recipes']['minas_ithil_field'])
-    print('Toggled minas ithil field recipe')
+def toggle_farming_recipe():
+    click(constants.BOXES['recipes']['gundabad_field'])
+    print('toggled farming recipe')
 
 
-def toggle_vegetable_treble():
+def toggle_processing_recipe():
     click(constants.BOXES['recipes']['vegetable_treble'])
-    print('Toggled vegetable treble recipe')
+    print('toggled processing recipe')
 
 
-def toggle_minas_ithil_ingredients():
+def toggle_cooking_category():
     click(constants.BOXES['categories']['minas_ithil_ingredients'])
-    print('Toggled minas ithil ingredients categories')
+    print('toggled cooking category')
 
 
-def toggle_bunch_of_par_cooked_vegetables():
+def toggle_cooking_recipe():
     click(constants.BOXES['recipes']['bunch_of_par_cooked_vegetables'])
-    print('Toggled bunch of par cooked vegetables recipe')
+    print('toggled cooking recipe')
 
 
 # MOVEMENTS
@@ -153,6 +153,9 @@ def rotate_right(degrees):
 def rotate_left(degrees):
     rotate(constants.KEY_BINDINGS['movement']['rotate_left'], degrees)
 
+
+def jump():
+    pydirectinput.press('space')
 
 # SELECTIONS
 def hotkey(args):
@@ -270,11 +273,11 @@ def identify_selected_npc(text):
 
 # MAIN CALLS
 def countdown():
-    click_center_of_screen()
     print('starting bot...')
     for i in range(3):
         print(f'{3 - i}...')
         time.sleep(1)
+    click_center_of_screen()
 
 
 def make(total, batch_count, induction_delay):
@@ -292,7 +295,7 @@ def make(total, batch_count, induction_delay):
         click_center_of_screen()
         click_center_of_screen()
         generate_random_delay(1150, 200)
-        move_forward() if i % 2 == 0 else move_backward()
+        jump()
         click_repair_tab()
         click_repair_all_button()
 
@@ -311,12 +314,12 @@ def farm(total, batch_count, greenhouse_station='right'):
         pydirectinput.press('t')
         click_farmer_tab()
         collapse_all_tiers()
-        toggle_minas_ithil_tier()
-        toggle_minas_ithil_vegetables()
-        toggle_minas_ithil_field()
+        toggle_tier()
+        toggle_farming_category()
+        toggle_farming_recipe()
 
         # CRAFT BATCH
-        for j in range(batch_count):
+        for _ in range(batch_count):
             click_make_button()
             generate_random_delay(3500)
             for k in range(random.randint(1, 2)):
@@ -396,9 +399,9 @@ def cook(total, batch_count=200):
     pydirectinput.press('t')
     click_cook_tab()
     collapse_all_tiers()
-    toggle_minas_ithil_tier()
-    toggle_minas_ithil_ingredients()
-    toggle_bunch_of_par_cooked_vegetables()
+    toggle_tier()
+    toggle_cooking_category()
+    toggle_cooking_recipe()
     generate_random_delay()
 
     make(total=total,
@@ -412,15 +415,14 @@ def process(total, batch_count=200):
     pydirectinput.press('t')
     click_farmer_tab()
     collapse_all_tiers()
-    toggle_minas_ithil_tier()
-    toggle_minas_ithil_vegetables()
-    toggle_vegetable_treble()
+    toggle_tier()
+    toggle_farming_category()
+    toggle_processing_recipe()
 
     make(total=total,
          batch_count=batch_count,
          induction_delay=constants.DELAYS['crop_processing_induction']
          )
 
-
-countdown()
-cook(180)
+farm(3238, 45)
+cook(5140)

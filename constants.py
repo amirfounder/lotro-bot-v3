@@ -38,16 +38,19 @@ BOXES = {
         'cook': (130, 30, 125, 12)
     },
     'tiers': {
-        'minas_ithil': (15, 345, 100, 12)
+        'minas_ithil': (15, 345, 100, 12),
+        'gundabad': (15, 364, 100, 12)
     },
     'categories': {
         'minas_ithil_vegetables': (23, 382, 90, 10),
-        'minas_ithil_ingredients': (25, 398, 100, 12)
+        'minas_ithil_ingredients': (25, 398, 100, 12),
+        'gundabad_vegetables': (24, 400, 90, 10)
     },
     'recipes': {
         'minas_ithil_field': (40, 400, 125, 10),
         'bunch_of_par_cooked_vegetables': (35, 414, 165, 12),
-        'vegetable_treble': (36, 432, 160, 10)
+        'vegetable_treble': (36, 432, 160, 10),
+        'gundabad_field': (35, 432, 120, 10)
     }
 }
 KEY_BINDINGS = {
